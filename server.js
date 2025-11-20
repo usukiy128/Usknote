@@ -63,6 +63,23 @@ app.get('/api/memos', (req, res) => {
   });
 });
 
+// 获取单个备忘录
+app.get('/api/memos/:id', (req, res) => {
+  const user = req.query.user || 'default';
+  const { id } = req.params;
+  db.get('SELECT * FROM memos WHERE id = ? AND user = ?', [id, user], (err, row) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    if (row) {
+      res.json(row);
+    } else {
+      res.status(404).json({ error: '备忘录不存在或无权限访问' });
+    }
+  });
+});
+
 // 添加新备忘录
 app.post('/api/memos', (req, res) => {
   const { title, content, user } = req.body;
