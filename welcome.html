@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usknote - 欢迎使用</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('cccall.jpg') center/cover no-repeat;
+            background-color: rgba(255, 255, 255, 0);
+            background-blend-mode: overlay;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 1;
+        }
+
+        .welcome-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .logo {
+            text-align: center;
+            color: white;
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-card h1 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .welcome-card p {
+            color: #718096;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature i {
+            font-size: 2rem;
+            color: #667eea;
+        }
+
+        .feature div {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .auth-section {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+        .auth-form {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .auth-form h2 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 20px;
+            color: #718096;
+        }
+
+        .switch-auth a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .switch-auth a:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* 错误消息样式 */
+        .error-message {
+            color: #e53e3e;
+            background-color: #fed7d7;
+            border: 1px solid #feb2b2;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            color: #667eea;
+            background-color: #c6f6d5;
+            border: 1px solid #9ae6b4;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 250px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px 0;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            color: #4a5568;
+            font-size: 1.5rem;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: #4a5568;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #ebf4ff;
+            color: #667eea;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .welcome-content {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .main-content {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .welcome-card, .auth-form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 主内容区 -->
+    <div class="main-content" id="main-content">
+        <div class="welcome-container">
+            <div class="logo">
+                <i class="fas fa-sticky-note"></i>
+            </div>
+            
+            <div class="welcome-card" id="welcome-card">
+                <h1>欢迎使用 Usknote</h1>
+                <p>简洁，优雅，就像是某位丰川姓的大小姐</p>
+                
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <div>快速记录</div>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-search"></i>
+                        <div>智能搜索</div>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-sync-alt"></i>
+                        <div>实时同步</div>
+                    </div>
+                </div>
+                
+                <div class="auth-section">
+                    <button class="btn btn-primary" id="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> 登录
+                    </button>
+                    <button class="btn btn-primary" id="register-btn">
+                        <i class="fas fa-user-plus"></i> 注册
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 登录表单 -->
+            <div class="auth-form hidden" id="login-form">
+                <h2><i class="fas fa-sign-in-alt"></i> 用户登录</h2>
+                <div class="error-message" id="login-error-message"></div>
+                <div class="success-message" id="login-success-message"></div>
+                <form id="login-form-element">
+                    <div class="form-group">
+                        <label for="login-username">用户名</label>
+                        <input type="text" id="login-username" placeholder="请输入用户名" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">密码</label>
+                        <input type="password" id="login-password" placeholder="请输入密码" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> 登录
+                    </button>
+                </form>
+                <div class="switch-auth">
+                    还没有账户？ <a href="#" id="switch-to-register">立即注册</a>
+                </div>
+            </div>
+            
+            <!-- 注册表单 -->
+            <div class="auth-form hidden" id="register-form">
+                <h2><i class="fas fa-user-plus"></i> 用户注册</h2>
+                <div class="error-message" id="register-error-message"></div>
+                <div class="success-message" id="register-success-message"></div>
+                <form id="register-form-element">
+                    <div class="form-group">
+                        <label for="register-username">用户名</label>
+                        <input type="text" id="register-username" placeholder="请输入用户名" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">邮箱</label>
+                        <input type="email" id="register-email" placeholder="请输入邮箱地址" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">密码</label>
+                        <input type="password" id="register-password" placeholder="请输入密码" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm-password">确认密码</label>
+                        <input type="password" id="register-confirm-password" placeholder="请再次输入密码" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> 注册
+                    </button>
+                </form>
+                <div class="switch-auth">
+                    已有账户？ <a href="#" id="switch-to-login">立即登录</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM 元素
+        const welcomeCard = document.getElementById('welcome-card');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const switchToRegister = document.getElementById('switch-to-register');
+        const switchToLogin = document.getElementById('switch-to-login');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        
+        // 切换表单显示
+        loginBtn.addEventListener('click', () => {
+            welcomeCard.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+        });
+        
+        registerBtn.addEventListener('click', () => {
+            welcomeCard.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+        });
+        
+        switchToRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+        });
+        
+        switchToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+        });
+        
+        // 登录表单提交
+        document.getElementById('login-form-element').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            // 获取消息元素
+            const errorMessage = document.getElementById('login-error-message');
+            const successMessage = document.getElementById('login-success-message');
+            
+            // 隐藏之前的消息
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+            
+            // 验证用户信息
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            if (users[username] && users[username].password === password) {
+                // 保存用户信息到 localStorage
+                localStorage.setItem('currentUser', username);
+                // 跳转到主应用
+                window.location.href = 'dashboard.html';
+            } else {
+                errorMessage.textContent = '用户名或密码错误';
+                errorMessage.classList.add('show');
+            }
+        });
+        
+        // 注册表单提交
+        document.getElementById('register-form-element').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            
+            // 获取消息元素
+            const errorMessage = document.getElementById('register-error-message');
+            const successMessage = document.getElementById('register-success-message');
+            
+            // 隐藏之前的消息
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+            
+            // 简单验证
+            if (username && email && password && confirmPassword) {
+                if (password !== confirmPassword) {
+                    errorMessage.textContent = '两次输入的密码不一致';
+                    errorMessage.classList.add('show');
+                    return;
+                }
+                
+                // 在实际应用中，这里应该发送注册请求到服务器
+                // 为了演示，我们将用户信息保存到 localStorage
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                users[username] = { email, password };
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                successMessage.textContent = '注册成功！请登录';
+                successMessage.classList.add('show');
+                
+                // 清空表单
+                document.getElementById('register-form-element').reset();
+                
+                // 延迟切换到登录表单
+                setTimeout(() => {
+                    registerForm.classList.add('hidden');
+                    loginForm.classList.remove('hidden');
+                }, 1500);
+            } else {
+                errorMessage.textContent = '请填写所有字段';
+                errorMessage.classList.add('show');
+            }
+        });
+        
+        // 显示主应用
+        function showMainApp() {
+            // 显示侧边栏
+            sidebar.classList.remove('hidden');
+            
+            // 隐藏欢迎页面内容
+            document.querySelector('.welcome-container').innerHTML = `
+                <iframe src="dashboard.html" style="width: 100%; height: 100vh; border: none;"></iframe>
+            `;
+        }
+        
+
+    </script>
+</body>
+</html>

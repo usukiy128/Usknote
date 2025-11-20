@@ -1,0 +1,69 @@
+{
+  "name": "online-memo-app",
+  "version": "1.0.0",
+  "description": "一个现代化的在线备忘录应用，支持创建、编辑、搜索和管理备忘录",
+  "main": "dashboard.html",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "welcome": "node server.js",
+    "build": "echo '静态网站，无需构建步骤'",
+    "test": "echo '运行基本功能测试' && node test.js",
+    "serve": "node server.js",
+    "preview": "node server.js"
+  },
+  "keywords": [
+    "备忘录",
+    "记事本",
+    "在线应用",
+    "笔记",
+    "任务管理",
+    "便签",
+    "memo",
+    "notes",
+    "productivity"
+  ],
+  "author": "您的姓名",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/online-memo-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/online-memo-app/issues"
+  },
+  "homepage": "https://github.com/your-username/online-memo-app#readme",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "serve": "^14.2.0"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "files": [
+    "dashboard.html",
+    "styles.css",
+    "script.js",
+    "README.md",
+    "package.json"
+  ],
+  "metadata": {
+    "appName": "Usknote",
+    "version": "1.0.0",
+    "description": "简洁,优雅",
+    "features": [
+      "创建和编辑备忘录",
+      "搜索功能",
+      "多种排序方式",
+      "本地存储",
+      "响应式设计",
+      "现代化UI"
+    ]
+  }
+}

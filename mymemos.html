@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的备忘录 - Usknote</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 我的备忘录页面专用样式 */
+        .mymemos-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mymemos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .mymemos-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .mymemos-title h1 {
+            color: #4a5568;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        .mymemos-title i {
+            color: #667eea;
+            font-size: 2.5rem;
+        }
+        
+        .mymemos-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .mymemos-stats {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            color: white;
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .mymemos-list {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .memo-item {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .memo-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .memo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .memo-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin: 0;
+            flex: 1;
+            margin-right: 20px;
+        }
+        
+        .memo-time {
+            background: #f0f4ff;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .memo-content {
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .memo-content::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(transparent, rgba(255, 255, 255, 0.6));
+        }
+        
+        .memo-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .memo-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.6);
+            color: #718096;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn:hover {
+            background: #f7fafc;
+            border-color: #cbd5e0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-btn.edit:hover {
+            background: #f0f4ff;
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .action-btn.delete:hover {
+            background: #fed7d7;
+            border-color: #feb2b2;
+            color: #c53030;
+        }
+        
+        .action-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        
+        .action-btn:active::after {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #e2e8f0;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+        
+        .loading-state i {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 深色主题样式 */
+        body.theme-dark {
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark .mymemos-container {
+            background: rgba(45, 55, 72, 0.6);
+            color: #e2e8f0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        body.theme-dark .mymemos-header {
+            border-bottom-color: #2d3748;
+        }
+        
+        body.theme-dark .mymemos-title h1 {
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark .mymemos-stats {
+            background: linear-gradient(135deg, #2d3748, #4a5568);
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark .memo-item {
+            background: #2d3748;
+            color: #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-left: 4px solid #667eea;
+        }
+        
+        body.theme-dark .memo-title {
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark .memo-time {
+            background: #2d3748;
+            color: #68d391;
+            border: 1px solid #4a5568;
+        }
+        
+        body.theme-dark .memo-content {
+            color: #a0aec0;
+        }
+        
+        body.theme-dark .memo-content::after {
+            background: linear-gradient(transparent, rgba(45, 55, 72, 0.6));
+        }
+        
+        body.theme-dark .memo-footer {
+            border-top-color: #2d3748;
+        }
+        
+        body.theme-dark .action-btn {
+            background: rgba(45, 55, 72, 0.6);
+            color: #a0aec0;
+            border-color: #4a5568;
+        }
+        
+        body.theme-dark .action-btn:hover {
+            background: #2d3748;
+            border-color: #667eea;
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark .action-btn.edit:hover {
+            background: #2d3748;
+            border-color: #667eea;
+            color: #a3bffa;
+        }
+        
+        body.theme-dark .action-btn.delete:hover {
+            background: #742a2a;
+            border-color: #c53030;
+            color: #fc8181;
+        }
+        
+        body.theme-dark .empty-state {
+            color: #a0aec0;
+        }
+        
+        body.theme-dark .empty-state i {
+            color: #4a5568;
+        }
+        
+        /* 字体大小调整 */
+        html[style*="font-size: 14px"] .mymemos-title h1 {
+            font-size: 1.8rem;
+        }
+        
+        html[style*="font-size: 18px"] .mymemos-title h1 {
+            font-size: 2.2rem;
+        }
+        
+        html[style*="font-size: 14px"] .stat-number {
+            font-size: 2.2rem;
+        }
+        
+        html[style*="font-size: 18px"] .stat-number {
+            font-size: 2.8rem;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .mymemos-header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+            
+            .mymemos-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .mymemos-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .memo-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .memo-title {
+                margin-right: 0;
+            }
+            
+            .memo-footer {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .memo-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <div id="sidebar-container"></div>
+
+    <div class="container main-content">
+        <div class="mymemos-container">
+            <!-- 页面头部 -->
+            <div class="mymemos-header">
+                <div class="mymemos-title">
+                    <i class="fas fa-list"></i>
+                    <h1>我的备忘录</h1>
+                </div>
+                <div class="mymemos-actions">
+                    <button class="btn btn-primary" id="new-memo-btn">
+                        <i class="fas fa-plus"></i> 新建备忘录
+                    </button>
+                    <button class="btn btn-secondary" id="refresh-btn">
+                        <i class="fas fa-sync-alt"></i> 刷新
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 统计信息 -->
+            <div class="mymemos-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-memos">0</div>
+                    <div class="stat-label">总备忘录数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="today-memos">0</div>
+                    <div class="stat-label">今日新增</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="recent-memos">0</div>
+                    <div class="stat-label">最近7天</div>
+                </div>
+            </div>
+            
+            <!-- 备忘录列表 -->
+            <div class="mymemos-list" id="memos-container">
+                <div class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <p>正在加载备忘录...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 加载侧边栏
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('sidebar-container').innerHTML = html;
+                
+                // 手动执行侧边栏的JavaScript代码
+                executeSidebarScripts();
+            })
+            .catch(error => {
+                console.error('加载侧边栏失败:', error);
+            });
+            
+        // 执行侧边栏脚本
+        function executeSidebarScripts() {
+            // 直接设置我的备忘录导航项为高亮状态
+            const mymemosLink = document.getElementById('mymemos-link');
+            if (mymemosLink) {
+                // 移除所有导航项的高亮状态
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    item.style.transform = '';
+                    item.style.boxShadow = '';
+                });
+                
+                // 设置我的备忘录导航项为高亮
+                mymemosLink.classList.add('active');
+            }
+        }
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查登录状态
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = 'welcome.html';
+                return;
+            }
+            
+            // 应用系统设置
+            applySystemSettings();
+            
+            // 绑定事件
+            document.getElementById('new-memo-btn').addEventListener('click', function() {
+                window.location.href = 'edit.html';
+            });
+            
+            document.getElementById('refresh-btn').addEventListener('click', function() {
+                loadMemos();
+            });
+            
+            // 加载备忘录
+            loadMemos();
+        });
+        
+        // 应用系统设置
+        function applySystemSettings() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) return;
+            
+            const userSettings = JSON.parse(localStorage.getItem('userSettings') || '{}');
+            const settings = userSettings[currentUser] || {
+                language: 'zh-CN',
+                theme: 'light',
+                fontSize: 'medium',
+                autoSave: true,
+                notifications: true
+            };
+            
+            // 应用语言设置
+            document.documentElement.lang = settings.language;
+            
+            // 应用主题设置
+            applyTheme(settings.theme);
+            
+            // 应用字体大小
+            applyFontSize(settings.fontSize);
+        }
+        
+        // 应用主题
+        function applyTheme(theme) {
+            // 移除所有主题类
+            document.body.classList.remove('theme-light', 'theme-dark');
+            
+            if (theme === 'auto') {
+                // 跟随系统主题
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.body.classList.add(prefersDark ? 'theme-dark' : 'theme-light');
+                
+                // 监听系统主题变化
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                    document.body.classList.remove('theme-light', 'theme-dark');
+                    document.body.classList.add(e.matches ? 'theme-dark' : 'theme-light');
+                });
+            } else {
+                document.body.classList.add(`theme-${theme}`);
+            }
+        }
+        
+        // 应用字体大小
+        function applyFontSize(fontSize) {
+            const sizes = {
+                'small': '14px',
+                'medium': '16px',
+                'large': '18px'
+            };
+            
+            document.documentElement.style.fontSize = sizes[fontSize] || sizes.medium;
+        }
+        
+        // 加载备忘录列表
+        function loadMemos() {
+            const currentUser = localStorage.getItem('currentUser') || 'default';
+            const container = document.getElementById('memos-container');
+            
+            // 显示加载状态
+            container.innerHTML = `
+                <div class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <p>正在加载备忘录...</p>
+                </div>
+            `;
+            
+            // 从 API 获取备忘录
+            fetch(`/api/memos?user=${currentUser}`)
+                .then(response => response.json())
+                .then(memos => {
+                    // 更新统计信息
+                    updateStats(memos);
+                    
+                    // 显示备忘录列表
+                    displayMemos(memos);
+                })
+                .catch(error => {
+                    console.error('加载备忘录失败:', error);
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>加载失败</h3>
+                            <p>无法加载备忘录，请检查网络连接</p>
+                            <button class="btn btn-primary" onclick="loadMemos()">
+                                <i class="fas fa-redo"></i> 重试
+                            </button>
+                        </div>
+                    `;
+                });
+        }
+        
+        // 更新统计信息
+        function updateStats(memos) {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            
+            const total = memos.length;
+            const todayCount = memos.filter(memo => new Date(memo.created_at) >= today).length;
+            const recentCount = memos.filter(memo => new Date(memo.created_at) >= weekAgo).length;
+            
+            document.getElementById('total-memos').textContent = total;
+            document.getElementById('today-memos').textContent = todayCount;
+            document.getElementById('recent-memos').textContent = recentCount;
+        }
+        
+        // 显示备忘录列表
+        function displayMemos(memos) {
+            const container = document.getElementById('memos-container');
+            
+            if (memos.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-sticky-note"></i>
+                        <h3>暂无备忘录</h3>
+                        <p>开始创建您的第一个备忘录吧！</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 按时间倒序排序
+            const sortedMemos = memos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            
+            container.innerHTML = sortedMemos.map(memo => `
+                <div class="memo-item" data-memo-id="${memo.id}">
+                    <div class="memo-header">
+                        <h3 class="memo-title">${escapeHtml(memo.title)}</h3>
+                        <div class="memo-time">${formatDate(memo.created_at)}</div>
+                    </div>
+                    <div class="memo-content">
+                        ${escapeHtml(memo.content)}
+                    </div>
+                    <div class="memo-footer">
+                        <div class="memo-actions">
+                            <button class="action-btn edit" onclick="editMemo(${memo.id})">
+                                <i class="fas fa-edit"></i> 编辑
+                            </button>
+                            <button class="action-btn delete" onclick="deleteMemo(${memo.id})">
+                                <i class="fas fa-trash"></i> 删除
+                            </button>
+                        </div>
+                        <div class="memo-id">ID: ${memo.id}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 编辑备忘录
+        function editMemo(memoId) {
+            window.location.href = `edit.html?id=${memoId}`;
+        }
+        
+        // 删除备忘录
+        function deleteMemo(memoId) {
+            if (confirm('确定要删除这个备忘录吗？此操作不可撤销。')) {
+                const currentUser = localStorage.getItem('currentUser') || 'default';
+                
+                fetch(`/api/memos/${memoId}?user=${currentUser}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.deleted > 0) {
+                        // 重新加载备忘录列表
+                        loadMemos();
+                        showToast('备忘录删除成功', 'success');
+                    } else {
+                        throw new Error('删除失败');
+                    }
+                })
+                .catch(error => {
+                    console.error('删除备忘录失败:', error);
+                    showToast('删除失败，请重试', 'error');
+                });
+            }
+        }
+        
+        // 转义 HTML 特殊字符
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        // 格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) {
+                return '今天';
+            } else if (diffDays === 2) {
+                return '昨天';
+            } else if (diffDays <= 7) {
+                return `${diffDays - 1}天前`;
+            } else {
+                return date.toLocaleDateString('zh-CN');
+            }
+        }
+        
+        // 显示消息提示
+        function showToast(message, type = 'info') {
+            // 创建临时提示元素
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            toast.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}" 
+                   style="color: ${type === 'success' ? '#667eea' : type === 'error' ? '#e53e3e' : '#3182ce'}; margin-right: 10px;"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // 3秒后自动移除
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        // 添加动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+    <!-- 页脚 -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            Power By <a href="https://github.com/usukiy128" class="usukiy-link" target="_blank">usukiy</a> ^_^
+        </div>
+    </footer>
+</body>
+</html>

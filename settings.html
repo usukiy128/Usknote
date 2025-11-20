@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统配置 - Usknote</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 深色主题样式 */
+        body.theme-dark {
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark header h1,
+        body.theme-dark header p {
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark .settings-section h2 {
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark .settings-card {
+            background: rgba(45, 55, 72, 0.6);
+            color: #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        body.theme-dark .form-group label,
+        body.theme-dark .setting-item label {
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark input,
+        body.theme-dark select,
+        body.theme-dark textarea {
+            background: #2d3748;
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
+        
+        body.theme-dark input:focus,
+        body.theme-dark select:focus,
+        body.theme-dark textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        body.theme-dark .security-item {
+            border-top-color: #2d3748;
+        }
+        
+        /* 字体大小调整 */
+        html[style*="font-size: 14px"] {
+            font-size: 14px;
+        }
+        
+        html[style*="font-size: 18px"] {
+            font-size: 18px;
+        }
+        
+        html[style*="font-size: 14px"] h1 {
+            font-size: 1.8rem;
+        }
+        
+        html[style*="font-size: 18px"] h1 {
+            font-size: 2.2rem;
+        }
+        
+        html[style*="font-size: 14px"] h2 {
+            font-size: 1.4rem;
+        }
+        
+        html[style*="font-size: 18px"] h2 {
+            font-size: 1.8rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <div id="sidebar-container"></div>
+
+    <div class="container main-content">
+        <header>
+            <h1><i class="fas fa-cog"></i> 系统配置</h1>
+            <p>管理您的个人资料和系统设置</p>
+        </header>
+
+        <main>
+            <!-- 个人资料设置 -->
+            <section class="settings-section">
+                <h2><i class="fas fa-user"></i> 个人资料</h2>
+                <div class="settings-card">
+                    <form id="profile-form">
+                        <div class="form-group">
+                            <label for="profile-username">用户名</label>
+                            <input type="text" id="profile-username" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-email">邮箱地址</label>
+                            <input type="email" id="profile-email" placeholder="请输入邮箱地址" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-bio">个人简介</label>
+                            <textarea id="profile-bio" placeholder="请输入个人简介..." rows="4"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> 保存个人资料
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- 系统设置 -->
+            <section class="settings-section">
+                <h2><i class="fas fa-cog"></i> 系统设置</h2>
+                <div class="settings-card">
+                    <div class="setting-item">
+                        <label for="language-select">界面语言</label>
+                        <select id="language-select">
+                            <option value="zh-CN">简体中文</option>
+                            <option value="en-US">English</option>
+                            <option value="ja-JP">日本語</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="theme-select">主题设置</label>
+                        <select id="theme-select">
+                            <option value="light">浅色主题</option>
+                            <option value="dark">深色主题</option>
+                            <option value="auto">跟随系统</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="font-size">字体大小</label>
+                        <select id="font-size">
+                            <option value="small">小</option>
+                            <option value="medium" selected>中</option>
+                            <option value="large">大</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="auto-save">自动保存</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="auto-save" checked>
+                            <span class="toggle-slider"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="notifications">消息通知</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="notifications" checked>
+                            <span class="toggle-slider"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button id="save-settings" class="btn btn-primary">
+                            <i class="fas fa-save"></i> 保存设置
+                        </button>
+                        <button id="reset-settings" class="btn btn-secondary">
+                            <i class="fas fa-undo"></i> 恢复默认
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 账户安全 -->
+            <section class="settings-section">
+                <h2><i class="fas fa-shield-alt"></i> 账户安全</h2>
+                <div class="settings-card">
+                    <div class="security-item">
+                        <h3>修改密码</h3>
+                        <form id="password-form">
+                            <div class="form-group">
+                                <label for="current-password">当前密码</label>
+                                <input type="password" id="current-password" placeholder="请输入当前密码" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">新密码</label>
+                                <input type="password" id="new-password" placeholder="请输入新密码" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">确认新密码</label>
+                                <input type="password" id="confirm-password" placeholder="请再次输入新密码" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-key"></i> 修改密码
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- 登出功能 -->
+                    <div class="security-item" style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #e2e8f0;">
+                        <h3>账户操作</h3>
+                        <div class="form-actions">
+                            <button id="logout-btn" class="btn btn-danger">
+                                <i class="fas fa-sign-out-alt"></i> 安全登出
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 消息提示 -->
+        <div id="message-toast" class="toast hidden">
+            <div class="toast-content">
+                <i class="fas fa-check-circle"></i>
+                <span id="toast-message"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 加载侧边栏
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('sidebar-container').innerHTML = html;
+                
+                // 手动执行侧边栏的JavaScript代码
+                executeSidebarScripts();
+            })
+            .catch(error => {
+                console.error('加载侧边栏失败:', error);
+            });
+            
+        // 执行侧边栏脚本
+        function executeSidebarScripts() {
+            // 直接设置系统配置导航项为高亮状态
+            const settingsLink = document.getElementById('settings-link');
+            if (settingsLink) {
+                // 移除所有导航项的高亮状态
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    item.style.transform = '';
+                    item.style.boxShadow = '';
+                });
+                
+                // 设置系统配置导航项为高亮
+                settingsLink.classList.add('active');
+            }
+        }
+
+        // 系统配置页面逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载用户设置
+            loadUserSettings();
+            
+            // 应用系统设置
+            applySystemSettings();
+            
+            // 绑定表单提交事件
+        document.getElementById('profile-form').addEventListener('submit', saveProfile);
+        document.getElementById('password-form').addEventListener('submit', changePassword);
+        document.getElementById('save-settings').addEventListener('click', saveSystemSettings);
+        document.getElementById('reset-settings').addEventListener('click', resetSettings);
+        document.getElementById('logout-btn').addEventListener('click', logout);
+        });
+
+        // 加载用户设置
+        function loadUserSettings() {
+            const currentUser = localStorage.getItem('currentUser');
+            const userSettings = JSON.parse(localStorage.getItem('userSettings') || '{}');
+            
+            if (currentUser) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                const userData = users[currentUser];
+                
+                if (userData) {
+                    document.getElementById('profile-username').value = currentUser;
+                    document.getElementById('profile-email').value = userData.email || '';
+                    document.getElementById('profile-bio').value = userData.bio || '';
+                }
+            }
+            
+            // 加载系统设置
+            const settings = userSettings[currentUser] || {
+                language: 'zh-CN',
+                theme: 'light',
+                fontSize: 'medium',
+                autoSave: true,
+                notifications: true
+            };
+            
+            document.getElementById('language-select').value = settings.language;
+            document.getElementById('theme-select').value = settings.theme;
+            document.getElementById('font-size').value = settings.fontSize;
+            document.getElementById('auto-save').checked = settings.autoSave;
+            document.getElementById('notifications').checked = settings.notifications;
+        }
+
+        // 保存个人资料
+        function saveProfile(e) {
+            e.preventDefault();
+            
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                showToast('请先登录', 'error');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const userData = users[currentUser];
+            
+            if (userData) {
+                userData.email = document.getElementById('profile-email').value;
+                userData.bio = document.getElementById('profile-bio').value;
+                
+                localStorage.setItem('users', JSON.stringify(users));
+                showToast('个人资料保存成功', 'success');
+            }
+        }
+
+        // 修改密码
+        function changePassword(e) {
+            e.preventDefault();
+            
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                showToast('请先登录', 'error');
+                return;
+            }
+            
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const userData = users[currentUser];
+            
+            if (!userData || userData.password !== currentPassword) {
+                showToast('当前密码错误', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showToast('两次输入的密码不一致', 'error');
+                return;
+            }
+            
+            userData.password = newPassword;
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            document.getElementById('password-form').reset();
+            showToast('密码修改成功', 'success');
+        }
+
+        // 保存系统设置
+        function saveSystemSettings() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                showToast('请先登录', 'error');
+                return;
+            }
+            
+            const userSettings = JSON.parse(localStorage.getItem('userSettings') || '{}');
+            
+            userSettings[currentUser] = {
+                language: document.getElementById('language-select').value,
+                theme: document.getElementById('theme-select').value,
+                fontSize: document.getElementById('font-size').value,
+                autoSave: document.getElementById('auto-save').checked,
+                notifications: document.getElementById('notifications').checked
+            };
+            
+            localStorage.setItem('userSettings', JSON.stringify(userSettings));
+            
+            // 立即应用设置
+            applySystemSettings();
+            showToast('系统设置保存成功', 'success');
+        }
+        
+        // 应用系统设置
+        function applySystemSettings() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) return;
+            
+            const userSettings = JSON.parse(localStorage.getItem('userSettings') || '{}');
+            const settings = userSettings[currentUser] || {
+                language: 'zh-CN',
+                theme: 'light',
+                fontSize: 'medium',
+                autoSave: true,
+                notifications: true
+            };
+            
+            // 应用语言设置
+            document.documentElement.lang = settings.language;
+            
+            // 应用主题设置
+            applyTheme(settings.theme);
+            
+            // 应用字体大小
+            applyFontSize(settings.fontSize);
+        }
+        
+        // 应用主题
+        function applyTheme(theme) {
+            // 移除所有主题类
+            document.body.classList.remove('theme-light', 'theme-dark');
+            
+            if (theme === 'auto') {
+                // 跟随系统主题
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.body.classList.add(prefersDark ? 'theme-dark' : 'theme-light');
+                
+                // 监听系统主题变化
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                    document.body.classList.remove('theme-light', 'theme-dark');
+                    document.body.classList.add(e.matches ? 'theme-dark' : 'theme-light');
+                });
+            } else {
+                document.body.classList.add(`theme-${theme}`);
+            }
+        }
+        
+        // 应用字体大小
+        function applyFontSize(fontSize) {
+            const sizes = {
+                'small': '14px',
+                'medium': '16px',
+                'large': '18px'
+            };
+            
+            document.documentElement.style.fontSize = sizes[fontSize] || sizes.medium;
+        }
+
+        // 恢复默认设置
+        function resetSettings() {
+            if (confirm('确定要恢复默认设置吗？')) {
+                document.getElementById('language-select').value = 'zh-CN';
+                document.getElementById('theme-select').value = 'light';
+                document.getElementById('font-size').value = 'medium';
+                document.getElementById('auto-save').checked = true;
+                document.getElementById('notifications').checked = true;
+                
+                showToast('设置已恢复默认', 'info');
+            }
+        }
+
+        // 登出功能
+        function logout() {
+            if (confirm('确定要安全登出吗？')) {
+                // 清除用户登录状态
+                localStorage.removeItem('currentUser');
+                
+                // 显示登出成功消息
+                showToast('已安全登出', 'success');
+                
+                // 延迟跳转到欢迎页面
+                setTimeout(() => {
+                    window.location.href = 'welcome.html';
+                }, 1500);
+            }
+        }
+
+        // 显示消息提示
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('message-toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+
+    <style>
+        .settings-section {
+            margin-bottom: 40px;
+        }
+        
+        .settings-section h2 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .settings-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        }
+        
+        .btn-danger:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(229, 62, 62, 0.3);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        
+        .btn:active::after {
+            width: 120px;
+            height: 120px;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-item label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .setting-item select {
+            width: 200px;
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .setting-item select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.6);
+            transition: .4s;
+            border-radius: 34px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #667eea;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .security-item h3 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            border-radius: 8px;
+            padding: 15px 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .toast.success {
+            border-left: 4px solid #667eea;
+        }
+        
+        .toast.error {
+            border-left: 4px solid #e53e3e;
+        }
+        
+        .toast.info {
+            border-left: 4px solid #3182ce;
+        }
+        
+        .toast.hidden {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toast.success .toast-content i {
+            color: #667eea;
+        }
+        
+        .toast.error .toast-content i {
+            color: #e53e3e;
+        }
+        
+        .toast.info .toast-content i {
+            color: #3182ce;
+        }
+    </style>
+
+    <!-- 页脚 -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            Power By <a href="https://github.com/usukiy128" class="usukiy-link" target="_blank">usukiy</a> ^_^
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,676 @@
+<!-- 侧边栏 -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2><i class="fas fa-sticky-note"></i> Usknote</h2>
+    </div>
+    
+
+    
+    <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item active" id="dashboard-link" data-section="dashboard">
+            <i class="fas fa-tachometer-alt"></i> 仪表盘
+        </a>
+        <a href="mymemos.html" class="nav-item" id="mymemos-link" data-section="mymemos">
+            <i class="fas fa-list"></i> 我的备忘录
+        </a>
+        <a href="settings.html" class="nav-item" id="settings-link" data-section="settings">
+            <i class="fas fa-cog"></i> 系统配置
+        </a>
+    </nav>
+</div>
+
+<style>
+/* 侧边栏样式 */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 250px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 20px 0;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.sidebar-header h2 {
+    color: #4a5568;
+    font-size: 1.5rem;
+    margin: 0;
+    flex: 1;
+}
+
+
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.nav-item {
+    padding: 12px 15px;
+    border-radius: 8px;
+    color: #4a5568;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.nav-item:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    color: #667eea;
+    transform: translateX(3px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.nav-item.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    transform: translateX(8px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    border-left: 4px solid #667eea;
+    font-weight: 600;
+    animation: navItemActive 0.5s ease;
+}
+
+.nav-item.active i {
+    transform: scale(1.2);
+    animation: iconBounce 0.5s ease;
+}
+
+/* 涟漪效果 */
+.nav-item::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(102, 126, 234, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+    opacity: 0;
+}
+
+.nav-item:active::after {
+    width: 100px;
+    height: 100px;
+    opacity: 1;
+    transition: width 0.3s, height 0.3s, opacity 0.1s;
+}
+
+/* 活动状态动画 */
+@keyframes navItemActive {
+    0% {
+        transform: translateX(0);
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    }
+    50% {
+        transform: translateX(12px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    }
+    100% {
+        transform: translateX(8px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+}
+
+/* 图标弹跳动画 */
+@keyframes iconBounce {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3);
+    }
+    100% {
+        transform: scale(1.2);
+    }
+}
+
+/* 脉冲效果（用于当前页面指示） */
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -8px;
+    width: 8px;
+    height: 8px;
+    background: #667eea;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-50%) scale(1.5);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
+    }
+}
+
+.nav-item i {
+    width: 20px;
+    text-align: center;
+}
+
+/* 主内容区样式 */
+.main-content {
+    margin-left: 270px;
+    width: calc(100% - 270px);
+}
+
+/* 移动端菜单按钮 */
+.mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1100;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    color: #4a5568;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.05);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        position: fixed;
+        height: 100vh;
+        z-index: 1000;
+    }
+    
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    /* 移动端遮罩层 */
+    .mobile-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 900;
+    }
+    
+    .mobile-overlay.active {
+        display: block;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 280px;
+    }
+    
+    .mobile-menu-btn {
+        top: 15px;
+        left: 15px;
+        padding: 10px;
+    }
+    
+    .main-content {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .nav-item {
+        padding: 15px 20px;
+        font-size: 1.1rem;
+    }
+}
+
+/* 深色主题样式 */
+body.theme-dark .sidebar {
+    background: rgba(26, 32, 44, 0.95);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+body.theme-dark .sidebar-header {
+    border-bottom: 1px solid #2d3748;
+}
+
+body.theme-dark .sidebar-header h2 {
+    color: #e2e8f0;
+}
+
+body.theme-dark .nav-item {
+    color: #cbd5e0;
+}
+
+body.theme-dark .nav-item:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    color: #a3bffa;
+}
+
+body.theme-dark .nav-item.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+</style>
+
+<script>
+    // 根据当前页面设置活动导航项
+    function setActiveNavItem() {
+        const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
+        const navItems = document.querySelectorAll('.nav-item');
+        
+        // 移除所有活动状态
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            item.style.transform = '';
+            item.style.boxShadow = '';
+        });
+        
+        // 根据当前页面设置对应的导航项为活动状态
+        switch(currentPage) {
+            case 'dashboard.html':
+                document.getElementById('dashboard-link')?.classList.add('active');
+                break;
+            case 'mymemos.html':
+                document.getElementById('mymemos-link')?.classList.add('active');
+                break;
+            case 'settings.html':
+                document.getElementById('settings-link')?.classList.add('active');
+                break;
+            case 'edit.html':
+                document.getElementById('mymemos-link')?.classList.add('active');
+                break;
+            case 'welcome.html':
+                // 欢迎页面不设置任何导航项为活动状态
+                break;
+            default:
+                // 默认设置仪表盘为活动状态
+                document.getElementById('dashboard-link')?.classList.add('active');
+                break;
+        }
+    }
+    
+    // 导航功能
+    document.addEventListener('DOMContentLoaded', function() {
+        // 根据当前页面设置活动状态
+        setActiveNavItem();
+        
+
+        
+        // 设置移动端菜单
+        setupMobileMenu();
+        
+        // 侧边栏导航项事件
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            // 防止重复点击
+            if (this.classList.contains('active')) {
+                return;
+            }
+            
+            // 添加点击反馈效果
+            this.style.transform = 'translateX(12px) scale(1.02)';
+            this.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.5)';
+            
+            // 移除所有活动状态
+            navItems.forEach(navItem => {
+                navItem.classList.remove('active');
+                navItem.style.transform = '';
+                navItem.style.boxShadow = '';
+            });
+            
+            // 添加当前活动状态
+            this.classList.add('active');
+            
+            // 添加音效反馈（可选）
+            playClickSound();
+            
+            // 添加视觉反馈延迟，让用户看到点击效果
+            setTimeout(() => {
+                // 让浏览器自动处理页面跳转（href属性）
+                // 不再需要手动调用 handleNavigation
+            }, 300);
+        });
+        
+        // 添加鼠标按下效果
+        item.addEventListener('mousedown', function() {
+            this.style.transform = 'translateX(5px) scale(0.98)';
+        });
+        
+        item.addEventListener('mouseup', function() {
+            if (!this.classList.contains('active')) {
+                this.style.transform = 'translateX(3px)';
+            }
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('active')) {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            }
+        });
+    });
+    
+    // 点击音效函数
+    function playClickSound() {
+        // 创建点击音效（轻柔的点击声）
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        } catch (error) {
+            // 如果音频API不可用，静默失败
+            console.log('音频反馈不可用');
+        }
+    }
+    });
+    
+
+    
+    // 移动端菜单功能
+    function setupMobileMenu() {
+        const mobileMenuBtn = document.createElement('button');
+        mobileMenuBtn.className = 'mobile-menu-btn';
+        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        mobileMenuBtn.setAttribute('aria-label', '打开菜单');
+        
+        const mobileOverlay = document.createElement('div');
+        mobileOverlay.className = 'mobile-overlay';
+        
+        document.body.appendChild(mobileMenuBtn);
+        document.body.appendChild(mobileOverlay);
+        
+        // 菜单按钮点击事件
+        mobileMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('mobile-open');
+            mobileOverlay.classList.toggle('active');
+            
+            // 更新按钮图标
+            const icon = this.querySelector('i');
+            if (sidebar.classList.contains('mobile-open')) {
+                icon.className = 'fas fa-times';
+                this.setAttribute('aria-label', '关闭菜单');
+            } else {
+                icon.className = 'fas fa-bars';
+                this.setAttribute('aria-label', '打开菜单');
+            }
+        });
+        
+        // 遮罩层点击事件
+        mobileOverlay.addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const icon = menuBtn.querySelector('i');
+            
+            sidebar.classList.remove('mobile-open');
+            this.classList.remove('active');
+            icon.className = 'fas fa-bars';
+            menuBtn.setAttribute('aria-label', '打开菜单');
+        });
+        
+        // 导航项点击时关闭菜单
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    setTimeout(() => {
+                        const sidebar = document.getElementById('sidebar');
+                        const menuBtn = document.querySelector('.mobile-menu-btn');
+                        const overlay = document.querySelector('.mobile-overlay');
+                        const icon = menuBtn.querySelector('i');
+                        
+                        sidebar.classList.remove('mobile-open');
+                        overlay.classList.remove('active');
+                        icon.className = 'fas fa-bars';
+                        menuBtn.setAttribute('aria-label', '打开菜单');
+                    }, 300);
+                }
+            });
+        });
+        
+        // 添加触摸手势支持
+        setupTouchGestures();
+    }
+    
+    // 触摸手势支持
+    function setupTouchGestures() {
+        if (window.innerWidth > 768) return;
+        
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.querySelector('.mobile-overlay');
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        
+        // 触摸开始
+        sidebar.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+            currentX = startX;
+            isDragging = true;
+            sidebar.style.transition = 'none';
+        }, { passive: true });
+        
+        // 触摸移动
+        sidebar.addEventListener('touchmove', function(e) {
+            if (!isDragging) return;
+            currentX = e.touches[0].clientX;
+            const deltaX = currentX - startX;
+            
+            // 只允许向右滑动关闭
+            if (deltaX > 0) {
+                const translateX = Math.min(deltaX, 280);
+                sidebar.style.transform = `translateX(${translateX - 280}px)`;
+                
+                // 更新遮罩层透明度
+                const opacity = Math.min(deltaX / 280, 0.5);
+                overlay.style.opacity = opacity;
+            }
+        }, { passive: true });
+        
+        // 触摸结束
+        sidebar.addEventListener('touchend', function() {
+            if (!isDragging) return;
+            isDragging = false;
+            sidebar.style.transition = 'transform 0.3s ease';
+            
+            const deltaX = currentX - startX;
+            
+            // 如果滑动距离超过100px，关闭菜单
+            if (deltaX > 100) {
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('active');
+                const icon = menuBtn.querySelector('i');
+                icon.className = 'fas fa-bars';
+                menuBtn.setAttribute('aria-label', '打开菜单');
+            } else {
+                // 否则恢复菜单状态
+                sidebar.style.transform = '';
+                overlay.style.opacity = '';
+            }
+        }, { passive: true });
+        
+        // 防止遮罩层上的触摸事件传播
+        overlay.addEventListener('touchstart', function(e) {
+            e.stopPropagation();
+        }, { passive: true });
+        
+        // 添加点击反馈效果
+        document.addEventListener('touchstart', function() {
+            // 为所有按钮添加触摸反馈
+        }, { passive: true });
+        
+        // 防止长按选择文本
+        document.addEventListener('contextmenu', function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+            }
+        });
+    }
+    
+    // 处理导航功能
+    function handleNavigation(section) {
+        switch(section) {
+            case 'dashboard':
+                // 仪表盘功能 - 跳转到仪表盘页面
+                window.location.href = 'dashboard.html';
+                break;
+            case 'mymemos':
+                // 我的备忘录功能 - 跳转到我的备忘录页面
+                window.location.href = 'mymemos.html';
+                break;
+            case 'settings':
+                // 系统配置功能 - 跳转到配置页面
+                window.location.href = 'settings.html';
+                break;
+        }
+    }
+    
+    // 加载最近备忘录列表
+    function loadRecentMemos() {
+        // 从 localStorage 获取当前用户
+        const currentUser = localStorage.getItem('currentUser') || 'default';
+        
+        // 从 API 获取最近备忘录
+        fetch(`/api/memos?user=${currentUser}&limit=5`)
+            .then(response => response.json())
+            .then(memos => {
+                const recentMemosContainer = document.getElementById('recent-memos-container');
+                if (!recentMemosContainer) return;
+                
+                recentMemosContainer.innerHTML = '';
+                
+                if (memos.length === 0) {
+                    recentMemosContainer.innerHTML = '<div class="empty-recent-memos">暂无最近备忘录</div>';
+                    return;
+                }
+                
+                // 按时间倒序显示最近备忘录
+                const sortedMemos = memos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                
+                sortedMemos.forEach(memo => {
+                    const memoItem = document.createElement('div');
+                    memoItem.className = 'recent-memo-item';
+                    memoItem.innerHTML = `
+                        <div class="recent-memo-title">${escapeHtml(memo.title)}</div>
+                        <div class="recent-memo-preview">${escapeHtml(memo.content.substring(0, 50))}${memo.content.length > 50 ? '...' : ''}</div>
+                        <div class="recent-memo-time">${formatDate(memo.created_at)}</div>
+                    `;
+                    
+                    memoItem.addEventListener('click', () => {
+                        // 点击备忘录项跳转到编辑页面
+                        window.location.href = `edit.html?id=${memo.id}`;
+                    });
+                    
+                    recentMemosContainer.appendChild(memoItem);
+                });
+            })
+            .catch(error => {
+                console.error('加载最近备忘录失败:', error);
+                const recentMemosContainer = document.getElementById('recent-memos-container');
+                if (recentMemosContainer) {
+                    recentMemosContainer.innerHTML = '<div class="error-message">加载最近备忘录失败</div>';
+                }
+            });
+    }
+    
+    // 转义 HTML 特殊字符
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+    
+    // 格式化日期
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffTime = Math.abs(now - date);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 1) {
+            return '今天';
+        } else if (diffDays === 2) {
+            return '昨天';
+        } else if (diffDays <= 7) {
+            return `${diffDays - 1}天前`;
+        } else {
+            return date.toLocaleDateString('zh-CN');
+        }
+    }
+</script>

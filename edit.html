@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑备忘录 - Usknote</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .edit-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .edit-title {
+            font-size: 1.5rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        #memo-title {
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        #memo-title:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+        }
+        
+        #memo-content {
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            min-height: 300px;
+            resize: vertical;
+            font-size: 1rem;
+            line-height: 1.6;
+            transition: border-color 0.3s;
+        }
+        
+        #memo-content:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #edf2f7;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #a0aec0;
+            padding: 20px;
+        }
+        
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* 深色主题样式 */
+        body.theme-dark {
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark .edit-container {
+            background: rgba(45, 55, 72, 0.6);
+            color: #e2e8f0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        body.theme-dark .edit-header {
+            border-bottom-color: #2d3748;
+        }
+        
+        body.theme-dark .edit-title {
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark .form-group label {
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark #memo-title,
+        body.theme-dark #memo-content {
+            background: #2d3748;
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
+        
+        body.theme-dark #memo-title:focus,
+        body.theme-dark #memo-content:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        body.theme-dark .btn-secondary {
+            background: #2d3748;
+            color: #a0aec0;
+        }
+        
+        body.theme-dark .btn-secondary:hover {
+            background: #4a5568;
+            color: #e2e8f0;
+        }
+        
+        body.theme-dark .empty-message {
+            color: #a0aec0;
+        }
+        
+        /* 字体大小调整 */
+        html[style*="font-size: 14px"] .edit-title {
+            font-size: 1.3rem;
+        }
+        
+        html[style*="font-size: 18px"] .edit-title {
+            font-size: 1.7rem;
+        }
+        
+        html[style*="font-size: 14px"] #memo-title,
+        html[style*="font-size: 14px"] #memo-content {
+            font-size: 0.9rem;
+        }
+        
+        html[style*="font-size: 18px"] #memo-title,
+        html[style*="font-size: 18px"] #memo-content {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="edit-container">
+            <div class="edit-header">
+                <div class="edit-title">
+                    <i class="fas fa-edit"></i>
+                    <span id="edit-mode-title">新建备忘录</span>
+                </div>
+                <a href="dashboard.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> 返回
+                </a>
+            </div>
+            
+            <form id="memo-form" class="edit-form">
+                <div class="form-group">
+                    <label for="memo-title">标题</label>
+                    <input type="text" id="memo-title" name="title" placeholder="请输入备忘录标题" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="memo-content">内容</label>
+                    <textarea id="memo-content" name="content" placeholder="在此输入您的备忘录内容..." required></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" id="cancel-btn">
+                        <i class="fas fa-times"></i> 取消
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="save-btn">
+                        <i class="fas fa-save"></i> <span id="save-btn-text">保存</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查登录状态
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = 'welcome.html';
+                return;
+            }
+            
+            // 应用系统设置
+            applySystemSettings();
+            
+            // 从 URL 参数获取备忘录 ID（如果存在）
+            const urlParams = new URLSearchParams(window.location.search);
+            const memoId = urlParams.get('id');
+            const isEditing = !!memoId;
+            
+            // 引用页面元素
+            const editModeTitle = document.getElementById('edit-mode-title');
+            const titleInput = document.getElementById('memo-title');
+            const contentInput = document.getElementById('memo-content');
+            const saveBtnText = document.getElementById('save-btn-text');
+            const form = document.getElementById('memo-form');
+            
+            // 如果是编辑模式，载入备忘录数据
+            if (isEditing) {
+                editModeTitle.textContent = '编辑备忘录';
+                saveBtnText.textContent = '更新';
+                
+                // 获取备忘录数据
+                fetch(`/api/memos/${memoId}?user=${currentUser}`)
+                    .then(response => response.json())
+                    .then(memo => {
+                        if (memo && !memo.error) {
+                            titleInput.value = memo.title;
+                            contentInput.value = memo.content;
+                        } else {
+                            showError('加载备忘录失败');
+                            window.location.href = 'dashboard.html';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('加载备忘录失败:', error);
+                        showError('加载备忘录失败');
+                        window.location.href = 'dashboard.html';
+                    });
+            }
+            
+            // 绑定表单提交事件
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // 获取表单数据
+                const title = titleInput.value.trim();
+                const content = contentInput.value.trim();
+                
+                if (!title) {
+                    showError('请输入标题');
+                    return;
+                }
+                
+                if (!content) {
+                    showError('请输入内容');
+                    return;
+                }
+                
+                // 禁用提交按钮
+                const saveBtn = document.getElementById('save-btn');
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 处理中...';
+                
+                // 发送请求
+                if (isEditing) {
+                    // 更新现有备忘录
+                    fetch(`/api/memos/${memoId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ title, content, user: currentUser })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.updated > 0) {
+                            showSuccess('备忘录更新成功');
+                            setTimeout(() => {
+                                window.location.href = 'dashboard.html';
+                            }, 1500);
+                        } else {
+                            throw new Error('更新失败');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('更新失败:', error);
+                        showError('更新失败: ' + error.message);
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = '<i class="fas fa-save"></i> 更新';
+                    });
+                } else {
+                    // 创建新备忘录
+                    fetch('/api/memos', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ title, content, user: currentUser })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.id) {
+                            showSuccess('备忘录创建成功');
+                            setTimeout(() => {
+                                window.location.href = 'dashboard.html';
+                            }, 1500);
+                        } else {
+                            throw new Error('创建失败');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('创建失败:', error);
+                        showError('创建失败: ' + error.message);
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = '<i class="fas fa-save"></i> 保存';
+                    });
+                }
+            });
+            
+            // 取消按钮事件
+            document.getElementById('cancel-btn').addEventListener('click', function() {
+                if (confirm('确定要取消编辑吗？未保存的更改将会丢失。')) {
+                    window.location.href = 'dashboard.html';
+                }
+            });
+        });
+        
+        // 应用系统设置
+        function applySystemSettings() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) return;
+            
+            const userSettings = JSON.parse(localStorage.getItem('userSettings') || '{}');
+            const settings = userSettings[currentUser] || {
+                language: 'zh-CN',
+                theme: 'light',
+                fontSize: 'medium',
+                autoSave: true,
+                notifications: true
+            };
+            
+            // 应用语言设置
+            document.documentElement.lang = settings.language;
+            
+            // 应用主题设置
+            applyTheme(settings.theme);
+            
+            // 应用字体大小
+            applyFontSize(settings.fontSize);
+        }
+        
+        // 应用主题
+        function applyTheme(theme) {
+            // 移除所有主题类
+            document.body.classList.remove('theme-light', 'theme-dark');
+            
+            if (theme === 'auto') {
+                // 跟随系统主题
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.body.classList.add(prefersDark ? 'theme-dark' : 'theme-light');
+                
+                // 监听系统主题变化
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                    document.body.classList.remove('theme-light', 'theme-dark');
+                    document.body.classList.add(e.matches ? 'theme-dark' : 'theme-light');
+                });
+            } else {
+                document.body.classList.add(`theme-${theme}`);
+            }
+        }
+        
+        // 应用字体大小
+        function applyFontSize(fontSize) {
+            const sizes = {
+                'small': '14px',
+                'medium': '16px',
+                'large': '18px'
+            };
+            
+            document.documentElement.style.fontSize = sizes[fontSize] || sizes.medium;
+        }
+        
+        // 显示错误消息
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'notification notification-error';
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(errorDiv);
+            
+            // 3秒后自动移除通知
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.parentNode.removeChild(errorDiv);
+                }
+            }, 3000);
+        }
+        
+        // 显示成功消息
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'notification notification-success';
+            successDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            // 3秒后自动移除通知
+            setTimeout(() => {
+                if (successDiv.parentNode) {
+                    successDiv.parentNode.removeChild(successDiv);
+                }
+            }, 3000);
+        }
+    </script>
+    
+    <!-- 通知样式 -->
+    <style>
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .notification-error {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+        }
+        
+        .notification-success {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+    </style>
+
+    <!-- 页脚 -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            Power By <a href="https://github.com/usukiy128" class="usukiy-link" target="_blank">usukiy</a> ^_^
+        </div>
+    </footer>
+</body>
+</html>
